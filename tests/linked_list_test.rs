@@ -28,7 +28,6 @@ mod tests {
         list.push(&5);
         list.push(&1);
 
-
         let vec = list.collect();
         assert_eq!(vec, [&Some(2), &Some(3), &Some(5), &Some(1)]);
     }

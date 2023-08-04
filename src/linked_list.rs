@@ -40,7 +40,7 @@ impl<T: Copy> LinkedList<T> {
 
     pub fn collect(&mut self) -> Vec<&Option<T>> {
         let mut result = Vec::<&Option<T>>::new();
-        
+
         self.iterate_collect(&mut result);
 
         result
@@ -53,8 +53,7 @@ impl<T: Copy> LinkedList<T> {
 
         match self.next.as_mut() {
             Some(node) => node.iterate_collect(vec),
-            None => return,
+            None => (),
         };
     }
-
 }
