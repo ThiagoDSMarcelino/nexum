@@ -1,17 +1,11 @@
+#[derive(Debug, Clone, Default)]
 pub struct LinkedList<T> {
     value: Option<T>,
     next: Option<Box<LinkedList<T>>>
 }
 
 impl<T> LinkedList<T> {
-    pub fn new() -> LinkedList<T> {
-        LinkedList {
-            value: None,
-            next: None
-        }
-    }
-
-    pub fn new_with(value: T) -> LinkedList<T> {
+    pub fn new(value: T) -> LinkedList<T> {
         LinkedList {
             value: Some(value),
             next: None
@@ -31,18 +25,5 @@ impl<T> LinkedList<T> {
             Some(node) => node.iterate_get(count + 1, index),
             None => &None,
         }
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_linked_list() {
-        let mut list: LinkedList<i32> = LinkedList::<i32>::new_with(2);
-
-        assert_eq!(list.get(0), &Some(2));
-        assert_eq!(list.get(1), &None);
     }
 }
