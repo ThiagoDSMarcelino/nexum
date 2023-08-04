@@ -37,4 +37,24 @@ impl<T: Copy> LinkedList<T> {
             None => self.next = Some(Box::new(LinkedList::new(value))),
         };
     }
+
+    pub fn collect(&mut self) -> Vec<&Option<T>> {
+        let mut result = Vec::<&Option<T>>::new();
+        
+        self.iterate_collect(&mut result);
+
+        result
+    }
+
+    fn iterate_collect<'a>(&'a mut self, vec: &mut Vec<&'a Option<T>>) {
+        if self.value.is_some() {
+            vec.push(&self.value);
+        };
+
+        match self.next.as_mut() {
+            Some(node) => node.iterate_collect(vec),
+            None => return,
+        };
+    }
+
 }
