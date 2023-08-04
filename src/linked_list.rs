@@ -51,9 +51,8 @@ impl<T: Copy> LinkedList<T> {
             vec.push(&self.value);
         };
 
-        match self.next.as_mut() {
-            Some(node) => node.iterate_collect(vec),
-            None => (),
+        if let Some(node) = self.next.as_mut() {
+            node.iterate_collect(vec)
         };
     }
 }
