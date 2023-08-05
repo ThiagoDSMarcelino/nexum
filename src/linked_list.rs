@@ -5,31 +5,31 @@ pub struct LinkedList<T> {
 }
 
 impl<T: Copy> LinkedList<T> {
-    pub fn new(value: &T) -> LinkedList<T> {
+    pub fn new(value: T) -> LinkedList<T> {
         LinkedList {
-            value: Some(*value),
+            value: Some(value),
             next: None,
         }
     }
 
-    pub fn get(&mut self, index: usize) -> &Option<T> {
+    pub fn get(&mut self, index: usize) -> Option<T> {
         self.iterate_get(0, index)
     }
 
-    fn iterate_get(&mut self, count: usize, index: usize) -> &Option<T> {
+    fn iterate_get(&mut self, count: usize, index: usize) -> Option<T> {
         if count == index {
-            return &self.value;
+            return self.value;
         };
 
         match self.next.as_mut() {
             Some(node) => node.iterate_get(count + 1, index),
-            None => &None,
+            None => None,
         }
     }
 
-    pub fn push(&mut self, value: &T) {
+    pub fn push(&mut self, value: T) {
         if self.value.is_none() {
-            self.value = Some(*value);
+            self.value = Some(value);
         };
 
         match self.next.as_mut() {
@@ -38,21 +38,40 @@ impl<T: Copy> LinkedList<T> {
         };
     }
 
-    pub fn collect(&mut self) -> Vec<&Option<T>> {
-        let mut result = Vec::<&Option<T>>::new();
+    pub fn collect(&mut self) -> Vec<Option<T>> {
+        let mut result = Vec::<Option<T>>::new();
 
         self.iterate_collect(&mut result);
 
         result
     }
 
-    fn iterate_collect<'a>(&'a mut self, vec: &mut Vec<&'a Option<T>>) {
+    fn iterate_collect(&mut self, vec: &mut Vec<Option<T>>) {
         if self.value.is_some() {
-            vec.push(&self.value);
+            vec.push(self.value);
         };
 
         if let Some(node) = self.next.as_mut() {
             node.iterate_collect(vec)
         };
+    }
+
+    pub fn pop(&mut self) -> Option<T> {
+        self.iterate_pop().1
+    }
+
+    fn iterate_pop(&mut self) -> (bool, Option<T>) {
+        match self.next.as_mut() {
+            Some(node) => {
+                let result = node.iterate_pop();
+
+                if result.0 {
+                    self.next = None;
+                }
+
+                (false, result.1)
+            },
+            None => (true, self.value),
+        }
     }
 }
