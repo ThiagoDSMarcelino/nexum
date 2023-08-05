@@ -4,7 +4,10 @@ pub struct LinkedList<T> {
     next: Option<Box<LinkedList<T>>>,
 }
 
-impl<T: Copy> LinkedList<T> {
+impl<T: Copy> LinkedList<T>
+where
+    T: PartialEq,
+{
     pub fn new(value: T) -> LinkedList<T> {
         LinkedList {
             value: Some(value),
@@ -86,5 +89,20 @@ impl<T: Copy> LinkedList<T> {
         };
 
         count
+    }
+
+    pub fn index_of(&mut self, value: T) -> Option<usize> {
+        self.iterate_index_of(value, 0)
+    }
+
+    pub fn iterate_index_of(&mut self, value: T, index: usize) -> Option<usize> {
+        if self.value == Some(value) {
+            return Some(index);
+        };
+
+        match self.next.as_mut() {
+            Some(node) => node.iterate_index_of(value, index + 1),
+            None => None,
+        }
     }
 }
