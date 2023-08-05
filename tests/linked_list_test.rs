@@ -47,6 +47,16 @@ mod tests {
     }
 
     #[test]
+    fn test_count() {
+        let mut list = LinkedList::new(2);
+        list.push(1);
+        list.push(3);
+        list.push(2);
+
+        assert_eq!(list.count(), 4);
+    }
+
+    #[test]
     fn test_general() {
         let mut list: LinkedList<i32> = LinkedList::new(2);
         list.push(3);
@@ -57,12 +67,14 @@ mod tests {
 
         list.push(5);
         list.push(1);
-        
+
         let mut vec = list.collect();
         assert_eq!(vec, [Some(2), Some(3), Some(5), Some(1)]);
 
         list.pop();
         vec = list.collect();
         assert_eq!(vec, [Some(2), Some(3), Some(5)]);
+
+        assert_eq!(list.count(), 3);
     }
 }

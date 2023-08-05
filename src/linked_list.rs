@@ -70,8 +70,21 @@ impl<T: Copy> LinkedList<T> {
                 }
 
                 (false, result.1)
-            },
+            }
             None => (true, self.value),
         }
+    }
+
+    pub fn count(&mut self) -> usize {
+        let mut count: usize = match self.next.as_mut() {
+            Some(node) => node.count(),
+            None => 0,
+        };
+
+        if self.value.is_some() {
+            count += 1;
+        };
+
+        count
     }
 }
