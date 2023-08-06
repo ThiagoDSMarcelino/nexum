@@ -25,7 +25,7 @@ where
         };
 
         match self.next.as_mut() {
-            Some(node) => node.iterate_get(count + 1, index),
+            Some(link) => link.iterate_get(count + 1, index),
             None => None,
         }
     }
@@ -33,10 +33,11 @@ where
     pub fn push(&mut self, value: T) {
         if self.value.is_none() {
             self.value = Some(value);
+            return;
         };
 
         match self.next.as_mut() {
-            Some(node) => node.push(value),
+            Some(link) => link.push(value),
             None => self.next = Some(Box::new(LinkedList::new(value))),
         };
     }
@@ -54,8 +55,8 @@ where
             vec.push(self.value);
         };
 
-        if let Some(node) = self.next.as_mut() {
-            node.iterate_collect(vec)
+        if let Some(link) = self.next.as_mut() {
+            link.iterate_collect(vec)
         };
     }
 
@@ -65,8 +66,8 @@ where
 
     fn iterate_pop(&mut self) -> (bool, Option<T>) {
         match self.next.as_mut() {
-            Some(node) => {
-                let result = node.iterate_pop();
+            Some(link) => {
+                let result = link.iterate_pop();
 
                 if result.0 {
                     self.next = None;
@@ -80,7 +81,7 @@ where
 
     pub fn count(&mut self) -> usize {
         let mut count: usize = match self.next.as_mut() {
-            Some(node) => node.count(),
+            Some(link) => link.count(),
             None => 0,
         };
 
@@ -101,7 +102,7 @@ where
         };
 
         match self.next.as_mut() {
-            Some(node) => node.iterate_index_of(value, index + 1),
+            Some(link) => link.iterate_index_of(value, index + 1),
             None => None,
         }
     }
