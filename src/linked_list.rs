@@ -16,17 +16,25 @@ where
     }
 
     pub fn get(&mut self, index: usize) -> Option<T> {
-        self.iterate_get(0, index)
-    }
-
-    fn iterate_get(&mut self, count: usize, index: usize) -> Option<T> {
-        if count == index {
+        let mut count: usize = 0;
+        if index == count {
             return self.value;
         };
 
-        match self.next.as_mut() {
-            Some(link) => link.iterate_get(count + 1, index),
-            None => None,
+        let mut crr: Option<&mut Box<LinkedList<T>>> = self.next.as_mut();
+        loop {
+            match crr {
+                Some(link) => {
+                    if index == count {
+                        return link.value;
+                    }
+
+                    crr = link.next.as_mut();
+                }
+                None => return None,
+            };
+
+            count += 1;
         }
     }
 
@@ -80,23 +88,20 @@ where
     }
 
     pub fn count(&mut self) -> usize {
-        let mut count: usize = match self.next.as_mut() {
+        match self.next.as_mut() {
             Some(link) => link.count(),
-            None => 0,
-        };
-
-        if self.value.is_some() {
-            count += 1;
-        };
-
-        count
+            None => match self.value.is_some() {
+                true => 1,
+                false => 0,
+            },
+        }
     }
 
     pub fn index_of(&mut self, value: T) -> Option<usize> {
         self.iterate_index_of(value, 0)
     }
 
-    pub fn iterate_index_of(&mut self, value: T, index: usize) -> Option<usize> {
+    fn iterate_index_of(&mut self, value: T, index: usize) -> Option<usize> {
         if self.value == Some(value) {
             return Some(index);
         };
