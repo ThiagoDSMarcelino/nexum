@@ -14,11 +14,11 @@ mod tests {
 
     #[test]
     fn test_push() {
-        let mut list = LinkedList::new(2);
+        let mut list = LinkedList::default();
         list.push(3);
 
-        assert_eq!(list.get(0), Some(2));
-        assert_eq!(list.get(1), Some(3));
+        assert_eq!(list.get(0), Some(3));
+        assert_eq!(list.get(1), None);
 
         list = LinkedList::default();
         list.push(6);
@@ -74,21 +74,25 @@ mod tests {
 
     #[test]
     fn test_general() {
-        let mut list = LinkedList::new(2);
+        let mut list = LinkedList::<i32>::default();
         list.push(3);
 
-        assert_eq!(list.get(0), Some(2));
-        assert_eq!(list.get(1), Some(3));
+        assert_eq!(list.get(0), Some(3));
         assert_eq!(list.get(2), None);
 
         list.push(5);
         list.push(1);
 
         let mut vec = list.collect();
-        assert_eq!(vec, [Some(2), Some(3), Some(5), Some(1)]);
+        assert_eq!(vec, [Some(3), Some(5), Some(1)]);
 
+        list = LinkedList::new(2);
+        list.push(3);
+        list.push(5);
+        list.push(1);
         list.pop();
         vec = list.collect();
+
         assert_eq!(vec, [Some(2), Some(3), Some(5)]);
         assert_eq!(list.count(), 3);
         assert_eq!(list.index_of(2), Some(0));

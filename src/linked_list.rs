@@ -8,7 +8,7 @@ impl<T: Copy> LinkedList<T>
 where
     T: PartialEq,
 {
-    pub fn new(value: T) -> LinkedList<T> {
+    pub fn new(value: T) -> Self {
         LinkedList {
             value: Some(value),
             next: None,
