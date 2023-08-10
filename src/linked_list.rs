@@ -21,20 +21,20 @@ where
             return self.value;
         };
 
-        let mut crr: Option<&mut Box<LinkedList<T>>> = self.next.as_mut();
+        let mut crr = self.next.as_mut();
         loop {
+            count += 1;
+
             match crr {
                 Some(link) => {
                     if index == count {
                         return link.value;
-                    }
+                    };
 
                     crr = link.next.as_mut();
                 }
                 None => return None,
             };
-
-            count += 1;
         }
     }
 
@@ -89,7 +89,7 @@ where
 
     pub fn count(&mut self) -> usize {
         match self.next.as_mut() {
-            Some(link) => link.count(),
+            Some(link) => link.count() + 1,
             None => match self.value.is_some() {
                 true => 1,
                 false => 0,
