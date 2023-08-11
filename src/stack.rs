@@ -1,9 +1,5 @@
+use crate::Stack;
 use std::ops::{Index, IndexMut};
-
-#[derive(Debug, Default, Clone)]
-pub struct Stack<T> {
-    values: [T; 8],
-}
 
 impl<T> Index<usize> for Stack<T> {
     type Output = T;

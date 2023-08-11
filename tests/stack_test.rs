@@ -1,7 +1,7 @@
 #[cfg(test)]
 
 mod tests {
-    use data_structures::stack::Stack;
+    use data_structures::Stack;
 
     #[test]
     fn test_get() {

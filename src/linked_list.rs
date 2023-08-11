@@ -1,8 +1,4 @@
-#[derive(Debug, Clone, Default)]
-pub struct LinkedList<T> {
-    value: Option<T>,
-    next: Option<Box<LinkedList<T>>>,
-}
+use crate::LinkedList;
 
 impl<T: Copy> LinkedList<T>
 where

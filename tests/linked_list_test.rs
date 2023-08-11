@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests {
-    use data_structures::linked_list::LinkedList;
+    use data_structures::LinkedList;
 
     #[test]
     fn test_get() {
