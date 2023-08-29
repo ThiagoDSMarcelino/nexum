@@ -1,110 +1,117 @@
-use crate::LinkedList;
+#[derive(Debug, Clone, Default)]
+pub struct LinkedList<T> {
+    head: Option<Box<Node<T>>>,
+    tail: Option<Box<Node<T>>>,
+    pub length: usize,
+}
 
-impl<T: Copy> LinkedList<T>
+#[derive(Debug, Clone)]
+struct Node<T> {
+    value: T,
+    next: Option<Box<Node<T>>>,
+    prev: Option<Box<Node<T>>>,
+}
+
+impl<T> LinkedList<T>
 where
-    T: PartialEq,
+    T: Clone,
 {
-    pub fn new(value: T) -> Self {
-        LinkedList {
-            value: Some(value),
-            next: None,
+    pub fn new() -> Self {
+        Self {
+            head: None,
+            tail: None,
+            length: 0,
         }
     }
 
-    pub fn get(&mut self, index: usize) -> Option<T> {
+    pub fn get(&mut self, index: usize) -> Option<&T> {
+        if index > self.length {
+            return None;
+        }
+
+        match index < self.length / 2 {
+            true => self.get_head(index),
+            false => self.get_tail(index),
+        }
+    }
+
+    fn get_head(&mut self, index: usize) -> Option<&T> {
         let mut count: usize = 0;
-        if index == count {
-            return self.value;
-        };
 
-        let mut crr = self.next.as_mut();
+        let mut crr = self.head.as_ref();
+
         loop {
-            count += 1;
-
             match crr {
-                Some(link) => {
+                Some(node) => {
                     if index == count {
-                        return link.value;
-                    };
+                        return Some(&node.value);
+                    }
 
-                    crr = link.next.as_mut();
+                    crr = node.next.as_ref();
                 }
                 None => return None,
-            };
-        }
-    }
-
-    pub fn push(&mut self, value: T) {
-        if self.value.is_none() {
-            self.value = Some(value);
-            return;
-        };
-
-        match self.next.as_mut() {
-            Some(link) => link.push(value),
-            None => self.next = Some(Box::new(LinkedList::new(value))),
-        };
-    }
-
-    pub fn collect(&mut self) -> Vec<Option<T>> {
-        let mut result = Vec::<Option<T>>::new();
-
-        self.iterate_collect(&mut result);
-
-        result
-    }
-
-    fn iterate_collect(&mut self, vec: &mut Vec<Option<T>>) {
-        if self.value.is_some() {
-            vec.push(self.value);
-        };
-
-        if let Some(link) = self.next.as_mut() {
-            link.iterate_collect(vec)
-        };
-    }
-
-    pub fn pop(&mut self) -> Option<T> {
-        self.iterate_pop().1
-    }
-
-    fn iterate_pop(&mut self) -> (bool, Option<T>) {
-        match self.next.as_mut() {
-            Some(link) => {
-                let result = link.iterate_pop();
-
-                if result.0 {
-                    self.next = None;
-                }
-
-                (false, result.1)
             }
-            None => (true, self.value),
+
+            count += 1;
         }
     }
 
-    pub fn count(&mut self) -> usize {
-        match self.next.as_mut() {
-            Some(link) => link.count() + 1,
-            None => match self.value.is_some() {
-                true => 1,
-                false => 0,
-            },
+    fn get_tail(&mut self, index: usize) -> Option<&T> {
+        let mut count: usize = self.length;
+
+        let mut crr = self.tail.as_ref();
+
+        loop {
+            match crr {
+                Some(node) => {
+                    if index == count {
+                        return Some(&node.value);
+                    }
+
+                    crr = node.prev.as_ref();
+                }
+                None => return None,
+            }
+
+            count -= 1;
         }
     }
 
-    pub fn index_of(&mut self, value: T) -> Option<usize> {
-        self.iterate_index_of(value, 0)
-    }
-
-    fn iterate_index_of(&mut self, value: T, index: usize) -> Option<usize> {
-        if self.value == Some(value) {
-            return Some(index);
+    pub fn push_front(&mut self, value: T) {
+        let new_node = Node {
+            value,
+            prev: None,
+            next: self.head.clone(),
         };
 
-        match self.next.as_mut() {
-            Some(link) => link.iterate_index_of(value, index + 1),
-            None => None,
+        let reference = Some(Box::new(new_node));
+
+        if let Some(node) = self.head.as_mut() {
+            node.prev = reference.clone();
         }
+
+        self.head = reference;
+
+        if self.tail.is_none() {
+            self.tail = self.head.clone();
+        }
+
+        self.length += 1;
+    }
+
+    pub fn push_back(&mut self, value: T) {
+        let new_node = Node {
+            value,
+            prev: self.tail.clone(),
+            next: None,
+        };
+
+        self.tail = Some(Box::new(new_node));
+
+        if self.head.is_none() {
+            self.head = self.tail.clone();
+        }
+
+        self.length += 1;
     }
 }
