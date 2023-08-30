@@ -83,13 +83,10 @@ mod tests {
             list.push_back(i);
         }
 
-        let mut i: usize = 0;
-
         let iter = list.into_iter();
 
-        for elem in iter {
+        for (i, elem) in iter.enumerate() {
             assert_eq!(&vec[i], elem);
-            i += 1;
         }
     }
 }
