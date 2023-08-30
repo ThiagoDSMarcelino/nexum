@@ -1,22 +1,31 @@
+use std::ptr::NonNull;
+
 #[derive(Debug, Clone, Default)]
 pub struct LinkedList<T> {
-    head: Option<Box<Node<T>>>,
-    tail: Option<Box<Node<T>>>,
-    pub length: usize,
+    head: Option<NonNull<Node<T>>>,
+    tail: Option<NonNull<Node<T>>>,
+    length: usize,
 }
 
 #[derive(Debug, Clone)]
 struct Node<T> {
-    value: T,
-    next: Option<Box<Node<T>>>,
-    prev: Option<Box<Node<T>>>,
+    element: T,
+    next: Option<NonNull<Node<T>>>,
+    prev: Option<NonNull<Node<T>>>,
 }
 
-impl<T> LinkedList<T>
-where
-    T: Clone,
-{
-    pub fn new() -> Self {
+impl<T> Node<T> {
+    pub const fn new(element: T) -> Self {
+        Self {
+            element,
+            next: None,
+            prev: None,
+        }
+    }
+}
+
+impl<T> LinkedList<T> {
+    pub const fn new() -> Self {
         Self {
             head: None,
             tail: None,
@@ -24,94 +33,59 @@ where
         }
     }
 
-    pub fn get(&mut self, index: usize) -> Option<&T> {
-        if index > self.length {
-            return None;
-        }
-
-        match index < self.length / 2 {
-            true => self.get_head(index),
-            false => self.get_tail(index),
-        }
+    pub fn len(&self) -> usize {
+        self.length
     }
 
-    fn get_head(&mut self, index: usize) -> Option<&T> {
-        let mut count: usize = 0;
-
-        let mut crr = self.head.as_ref();
-
-        loop {
-            match crr {
-                Some(node) => {
-                    if index == count {
-                        return Some(&node.value);
-                    }
-
-                    crr = node.next.as_ref();
-                }
-                None => return None,
-            }
-
-            count += 1;
-        }
-    }
-
-    fn get_tail(&mut self, index: usize) -> Option<&T> {
-        let mut count: usize = self.length;
-
-        let mut crr = self.tail.as_ref();
-
-        loop {
-            match crr {
-                Some(node) => {
-                    if index == count {
-                        return Some(&node.value);
-                    }
-
-                    crr = node.prev.as_ref();
-                }
-                None => return None,
-            }
-
-            count -= 1;
-        }
+    pub fn is_empty(&self) -> bool {
+        self.head.is_none()
     }
 
     pub fn push_front(&mut self, value: T) {
-        let new_node = Node {
-            value,
-            prev: None,
-            next: self.head.clone(),
-        };
+        let new_node = Box::new(Node::new(value));
+        let node_ptr = NonNull::from(Box::leak(new_node));
 
-        let reference = Some(Box::new(new_node));
+        unsafe {
+            (*node_ptr.as_ptr()).next = self.head;
 
-        if let Some(node) = self.head.as_mut() {
-            node.prev = reference.clone();
-        }
+            let node = Some(node_ptr);
 
-        self.head = reference;
+            match self.head {
+                Some(head) => (*head.as_ptr()).prev = node,
+                None => self.tail = node,
+            }
 
-        if self.tail.is_none() {
-            self.tail = self.head.clone();
+            self.head = node;
         }
 
         self.length += 1;
     }
 
     pub fn push_back(&mut self, value: T) {
-        let new_node = Node {
-            value,
-            prev: self.tail.clone(),
-            next: None,
-        };
+        let new_node = Box::new(Node::new(value));
+        let node_ptr = NonNull::from(Box::leak(new_node));
 
-        self.tail = Some(Box::new(new_node));
+        unsafe {
+            (*node_ptr.as_ptr()).prev = self.tail;
 
-        if self.head.is_none() {
-            self.head = self.tail.clone();
+            let node = Some(node_ptr);
+
+            match self.tail {
+                Some(tail) => (*tail.as_ptr()).next = node,
+                None => self.head = node,
+            }
+
+            self.tail = node;
         }
 
         self.length += 1;
+    }
+
+    pub fn front(&self) -> Option<&T> {
+        unsafe { self.head.map(|node| &(*node.as_ptr()).element) }
+    }
+
+    pub fn back(&self) -> Option<&T> {
+        unsafe { self.tail.map(|node| &(*node.as_ptr()).element) }
     }
 }
