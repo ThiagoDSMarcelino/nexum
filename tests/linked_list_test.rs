@@ -19,6 +19,19 @@ mod tests {
     }
 
     #[test]
+    fn clear() {
+        let mut list: LinkedList<u32> = LinkedList::new();
+
+        list.push_back(1);
+        list.push_back(2);
+        list.push_back(3);
+
+        list.clear();
+
+        assert!(list.is_empty());
+    }
+
+    #[test]
     fn push_front() {
         let mut list: LinkedList<u32> = LinkedList::new();
 
@@ -52,8 +65,9 @@ mod tests {
         list.push_front(6);
         list.push_front(12);
 
-        list.pop_front();
+        let popped = list.pop_front();
 
+        assert_eq!(popped, Some(12));
         assert_eq!(list.front(), Some(&6));
         assert_eq!(list.back(), Some(&1));
         assert_eq!(list.len(), 2);
@@ -67,8 +81,9 @@ mod tests {
         list.push_back(56);
         list.push_back(33);
 
-        list.pop_back();
+        let popped = list.pop_back();
 
+        assert_eq!(popped, Some(33));
         assert_eq!(list.front(), Some(&18));
         assert_eq!(list.back(), Some(&56));
         assert_eq!(list.len(), 2);
