@@ -130,6 +130,75 @@ impl<T> LinkedList<T> {
             node.into_element()
         })
     }
+
+    pub fn remove(&mut self, index: usize) -> Option<T> {
+        if index > self.length {
+            return None;
+        }
+
+        if index == 0 {
+            return self.pop_front();
+        }
+
+        if index == self.length {
+            return self.pop_back();
+        }
+
+        match self.length / 2 > index {
+            true => self.remove_by_head(index),
+            false => self.remove_by_tail(index),
+        }
+    }
+
+    fn remove_by_head(&mut self, index: usize) -> Option<T> {
+        let mut crr = self.head;
+        let mut count: usize = 0;
+
+        unsafe {
+            loop {
+                if index != count {
+                    crr = (*crr.unwrap().as_ptr()).next;
+                    count += 1;
+                    continue;
+                }
+
+                return self.remove_node(crr);
+            }
+        }
+    }
+
+    fn remove_by_tail(&mut self, index: usize) -> Option<T> {
+        let mut crr = self.tail;
+        let mut count: usize = self.length;
+
+        unsafe {
+            loop {
+                if index != count {
+                    crr = (*crr.unwrap().as_ptr()).prev;
+                    count -= 1;
+                    continue;
+                }
+
+                return self.remove_node(crr);
+            }
+        }
+    }
+
+    unsafe fn remove_node(&mut self, node: Option<NonNull<Node<T>>>) -> Option<T> {
+        node.map(|node| {
+            let node = Box::from_raw(node.as_ptr());
+
+            if let Some(next) = node.next {
+                (*next.as_ptr()).prev = node.prev
+            }
+
+            if let Some(prev) = node.prev {
+                (*prev.as_ptr()).next = node.next
+            }
+
+            node.into_element()
+        })
+    }
 }
 
 impl<'a, T> IntoIterator for &'a LinkedList<T> {

@@ -104,4 +104,25 @@ mod tests {
             assert_eq!(&vec[i], elem);
         }
     }
+
+    #[test]
+    fn remove() {
+        let mut list = LinkedList::new();
+        let mut vec = vec![0, 1, 2, 3, 4, 5];
+
+        list.push_back(0);
+        list.push_back(1);
+        list.push_back(2);
+        list.push_back(3);
+        list.push_back(4);
+        list.push_back(5);
+
+        let removed_list = list.remove(2);
+        let removed_vec = vec.remove(2);
+
+        assert_eq!(removed_list, Some(removed_vec));
+        for (i, elem) in list.into_iter().enumerate() {
+            assert_eq!(elem, &vec[i]);
+        }
+    }
 }
