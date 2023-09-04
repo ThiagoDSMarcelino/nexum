@@ -125,4 +125,14 @@ mod tests {
             assert_eq!(elem, &vec[i]);
         }
     }
+
+    #[test]
+    fn from() {
+        let arr = [5, 2, 1, 4];
+        let list = LinkedList::from(arr);
+
+        for (i, elem) in list.into_iter().enumerate() {
+            assert_eq!(&arr[i], elem);
+        }
+    }
 }

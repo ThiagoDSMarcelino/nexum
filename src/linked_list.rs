@@ -214,6 +214,18 @@ impl<'a, T> IntoIterator for &'a LinkedList<T> {
     }
 }
 
+impl<T, const N: usize> From<[T; N]> for LinkedList<T> {
+    fn from(source: [T; N]) -> Self {
+        let mut list = LinkedList::new();
+
+        for element in source {
+            list.push_back(element);
+        }
+        
+        list
+    }
+}
+
 pub struct NodeIterator<'a, T> {
     node: Option<NonNull<Node<T>>>,
     index: usize,
