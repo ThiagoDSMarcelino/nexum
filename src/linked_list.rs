@@ -14,6 +14,12 @@ struct Node<T> {
     prev: Option<NonNull<Node<T>>>,
 }
 
+pub struct NodeIterator<'a, T> {
+    node: Option<NonNull<Node<T>>>,
+    index: usize,
+    marker: PhantomData<&'a Node<T>>,
+}
+
 impl<T> Node<T> {
     const fn new(element: T) -> Self {
         Self {
@@ -42,7 +48,7 @@ impl<T> LinkedList<T> {
     }
 
     pub fn is_empty(&self) -> bool {
-        self.head.is_none()
+        self.length == 0
     }
 
     pub fn clear(&mut self) {
@@ -59,8 +65,8 @@ impl<T> LinkedList<T> {
         self.tail.map(|node| unsafe { &(*node.as_ptr()).element })
     }
 
-    pub fn push_front(&mut self, value: T) {
-        let new_node = Box::new(Node::new(value));
+    pub fn push_front(&mut self, element: T) {
+        let new_node = Box::new(Node::new(element));
         let node_ptr = NonNull::from(Box::leak(new_node));
 
         unsafe {
@@ -79,8 +85,8 @@ impl<T> LinkedList<T> {
         self.length += 1;
     }
 
-    pub fn push_back(&mut self, value: T) {
-        let new_node = Box::new(Node::new(value));
+    pub fn push_back(&mut self, element: T) {
+        let new_node = Box::new(Node::new(element));
         let node_ptr = NonNull::from(Box::leak(new_node));
 
         unsafe {
@@ -196,8 +202,94 @@ impl<T> LinkedList<T> {
                 (*prev.as_ptr()).next = node.next
             }
 
+            self.length -= 1;
             node.into_element()
         })
+    }
+
+    pub fn insert(&mut self, index: usize, element: T) {
+        if index > self.length {
+            panic!("Invalid index");
+        }
+
+        if index == 0 {
+            self.push_front(element);
+            return;
+        }
+
+        if index == self.length {
+            self.push_back(element);
+            return;
+        }
+
+        match self.length / 2 > index {
+            true => self.inset_by_head(index, element),
+            false => self.inset_by_tail(index, element),
+        }
+    }
+
+    fn inset_by_head(&mut self, index: usize, element: T) {
+        let mut crr = self.head;
+        let mut count: usize = 0;
+
+        unsafe {
+            loop {
+                if index != count {
+                    crr = (*crr.unwrap().as_ptr()).next;
+                    count += 1;
+                    continue;
+                }
+
+                self.insert_node(crr, element);
+                return;
+            }
+        }
+    }
+
+    fn inset_by_tail(&mut self, index: usize, element: T) {
+        let mut crr = self.tail;
+        let mut count: usize = self.length;
+
+        unsafe {
+            loop {
+                if index != count {
+                    crr = (*crr.unwrap().as_ptr()).prev;
+                    count -= 1;
+                    continue;
+                }
+
+                self.insert_node(crr, element);
+                return;
+            }
+        }
+    }
+
+    unsafe fn insert_node(&mut self, node: Option<NonNull<Node<T>>>, element: T) {
+        if let Some(node) = node {
+            let mut new_node = Box::new(Node::new(element));
+
+            new_node.prev = (*node.as_ptr()).prev;
+            new_node.next = Some(node);
+
+            let node_ptr = NonNull::from(Box::leak(new_node));
+
+            (*(*node.as_ptr()).prev.unwrap().as_ptr()).next = Some(node_ptr);
+            (*node.as_ptr()).prev = Some(node_ptr);
+
+            self.length += 1;
+        }
+    }
+}
+
+impl<T, const N: usize> From<[T; N]> for LinkedList<T> {
+    fn from(source: [T; N]) -> Self {
+        let mut list = LinkedList::new();
+
+        for element in source {
+            list.push_back(element);
+        }
+
+        list
     }
 }
 
@@ -212,24 +304,6 @@ impl<'a, T> IntoIterator for &'a LinkedList<T> {
             marker: PhantomData,
         }
     }
-}
-
-impl<T, const N: usize> From<[T; N]> for LinkedList<T> {
-    fn from(source: [T; N]) -> Self {
-        let mut list = LinkedList::new();
-
-        for element in source {
-            list.push_back(element);
-        }
-        
-        list
-    }
-}
-
-pub struct NodeIterator<'a, T> {
-    node: Option<NonNull<Node<T>>>,
-    index: usize,
-    marker: PhantomData<&'a Node<T>>,
 }
 
 impl<'a, T> Iterator for NodeIterator<'a, T> {
