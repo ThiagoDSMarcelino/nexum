@@ -1,5 +1,5 @@
-pub use linked_list::LinkedList;
+pub use list::LinkedList;
 
-mod linked_list;
-mod linked_list_iterator;
+mod list;
+mod iterator;
 mod node;
