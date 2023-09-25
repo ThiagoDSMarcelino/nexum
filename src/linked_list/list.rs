@@ -1,6 +1,6 @@
 use std::ptr::NonNull;
 
-use super::node::Node;
+use super::Node;
 
 #[derive(Debug, Clone, Default)]
 pub struct LinkedList<T> {

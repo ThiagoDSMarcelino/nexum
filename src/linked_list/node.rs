@@ -1,7 +1,7 @@
 use std::ptr::NonNull;
 
 #[derive(Debug, Clone)]
-pub struct Node<T> {
+pub(super) struct Node<T> {
     pub(super) element: T,
     pub(super) next: Option<NonNull<Node<T>>>,
     pub(super) prev: Option<NonNull<Node<T>>>,

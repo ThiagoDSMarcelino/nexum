@@ -1,3 +1,5 @@
+pub use binary_tree::BinaryTree;
 pub use linked_list::LinkedList;
 
-mod linked_list;
+pub mod binary_tree;
+pub mod linked_list;

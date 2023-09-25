@@ -1,8 +1,8 @@
 use std::{marker::PhantomData, ptr::NonNull};
 
-use crate::LinkedList;
+use super::LinkedList;
 
-use super::node::Node;
+use super::Node;
 
 pub struct NodeIterator<'a, T> {
     node: Option<NonNull<Node<T>>>,
