@@ -1,37 +1,12 @@
-use std::{marker::PhantomData, ptr::NonNull};
+use std::ptr::NonNull;
+
+use super::node::Node;
 
 #[derive(Debug, Clone, Default)]
 pub struct LinkedList<T> {
-    head: Option<NonNull<Node<T>>>,
+    pub(super) head: Option<NonNull<Node<T>>>,
     tail: Option<NonNull<Node<T>>>,
     length: usize,
-}
-
-#[derive(Debug, Clone)]
-struct Node<T> {
-    element: T,
-    next: Option<NonNull<Node<T>>>,
-    prev: Option<NonNull<Node<T>>>,
-}
-
-pub struct NodeIterator<'a, T> {
-    node: Option<NonNull<Node<T>>>,
-    index: usize,
-    marker: PhantomData<&'a Node<T>>,
-}
-
-impl<T> Node<T> {
-    const fn new(element: T) -> Self {
-        Self {
-            element,
-            next: None,
-            prev: None,
-        }
-    }
-
-    fn into_element(self) -> T {
-        self.element
-    }
 }
 
 impl<T> LinkedList<T> {
@@ -290,31 +265,5 @@ impl<T, const N: usize> From<[T; N]> for LinkedList<T> {
         }
 
         list
-    }
-}
-
-impl<'a, T> IntoIterator for &'a LinkedList<T> {
-    type Item = &'a T;
-    type IntoIter = NodeIterator<'a, T>;
-
-    fn into_iter(self) -> NodeIterator<'a, T> {
-        NodeIterator {
-            node: self.head,
-            index: 0,
-            marker: PhantomData,
-        }
-    }
-}
-
-impl<'a, T> Iterator for NodeIterator<'a, T> {
-    type Item = &'a T;
-
-    fn next(&mut self) -> Option<&'a T> {
-        self.node.map(|crr| unsafe {
-            self.node = (*crr.as_ptr()).next;
-            self.index += 1;
-
-            &(*crr.as_ptr()).element
-        })
     }
 }
