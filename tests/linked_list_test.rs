@@ -1,6 +1,5 @@
 #[cfg(test)]
 mod tests {
-    use data_structures::linked_list::NodeIterator;
     use data_structures::LinkedList;
 
     #[test]
@@ -149,7 +148,7 @@ mod tests {
         let arr = [3, 5, 8, 4];
         let list: LinkedList<u32> = LinkedList::from(arr);
 
-        let iter: NodeIterator<'_, u32> = list.into_iter();
+        let iter = list.into_iter();
 
         for (i, elem) in iter.enumerate() {
             assert_eq!(&arr[i], elem);
