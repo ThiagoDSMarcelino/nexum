@@ -5,5 +5,8 @@
     },
     "rust-analyzer.linkedProjects": [
         "./Cargo.toml"
+    ],
+    "cSpell.words": [
+        "Nexum"
     ]
 }

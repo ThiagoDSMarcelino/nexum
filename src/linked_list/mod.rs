@@ -1,4 +1,3 @@
-pub use iterator::NodeIterator;
 pub use list::LinkedList;
 use node::Node;
 
