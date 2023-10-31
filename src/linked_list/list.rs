@@ -2,14 +2,19 @@ use std::ptr::NonNull;
 
 use super::Node;
 
+/// A doubly linked list data structure.
 #[derive(Debug, Clone, Default)]
 pub struct LinkedList<T> {
+    /// The first node in the linked list.
     pub(super) head: Option<NonNull<Node<T>>>,
+    /// The last node in the linked list.
     tail: Option<NonNull<Node<T>>>,
+    /// The number of elements in the linked list.
     length: usize,
 }
 
 impl<T> LinkedList<T> {
+    /// Creates a new, empty linked list.
     pub const fn new() -> Self {
         Self {
             head: None,
@@ -18,28 +23,34 @@ impl<T> LinkedList<T> {
         }
     }
 
+    /// Returns the number of elements in the linked list.
     pub fn len(&self) -> usize {
         self.length
     }
 
+    /// Checks if the linked list is empty.
     pub fn is_empty(&self) -> bool {
         self.length == 0
     }
 
+    /// Removes all elements from the linked list, making it empty.
     pub fn clear(&mut self) {
         self.head = None;
         self.tail = None;
         self.length = 0;
     }
-
+    
+    /// Returns a reference to the first element in the linked list, if any.
     pub fn front(&self) -> Option<&T> {
         self.head.map(|node| unsafe { &(*node.as_ptr()).element })
     }
-
+    
+    /// Returns a reference to the last element in the linked list, if any.
     pub fn back(&self) -> Option<&T> {
         self.tail.map(|node| unsafe { &(*node.as_ptr()).element })
     }
-
+    
+    /// Adds an element to the front of the linked list.
     pub fn push_front(&mut self, element: T) {
         let new_node = Box::new(Node::new(element));
         let node_ptr = NonNull::from(Box::leak(new_node));
@@ -59,7 +70,8 @@ impl<T> LinkedList<T> {
 
         self.length += 1;
     }
-
+    
+    /// Adds an element to the back of the linked list.
     pub fn push_back(&mut self, element: T) {
         let new_node = Box::new(Node::new(element));
         let node_ptr = NonNull::from(Box::leak(new_node));
@@ -79,7 +91,8 @@ impl<T> LinkedList<T> {
 
         self.length += 1;
     }
-
+    
+    /// Removes and returns the first element from the linked list, if any.
     pub fn pop_front(&mut self) -> Option<T> {
         self.head.map(|node| unsafe {
             let node = Box::from_raw(node.as_ptr());
@@ -95,7 +108,8 @@ impl<T> LinkedList<T> {
             node.into_element()
         })
     }
-
+    
+    /// Removes and returns the last element from the linked list, if any.
     pub fn pop_back(&mut self) -> Option<T> {
         self.tail.map(|node| unsafe {
             let node = Box::from_raw(node.as_ptr());
@@ -111,7 +125,8 @@ impl<T> LinkedList<T> {
             node.into_element()
         })
     }
-
+    
+    /// Removes and returns the element at the specified index, if it exists.
     pub fn remove(&mut self, index: usize) -> Option<T> {
         if index > self.length {
             return None;
@@ -181,7 +196,8 @@ impl<T> LinkedList<T> {
             node.into_element()
         })
     }
-
+    
+    /// Inserts an element at the specified index in the linked list.
     pub fn insert(&mut self, index: usize, element: T) {
         if index > self.length {
             panic!("Invalid index");
@@ -257,6 +273,7 @@ impl<T> LinkedList<T> {
 }
 
 impl<T, const N: usize> From<[T; N]> for LinkedList<T> {
+    /// Creates a linked list from an array of elements.
     fn from(source: [T; N]) -> Self {
         let mut list = LinkedList::new();
 

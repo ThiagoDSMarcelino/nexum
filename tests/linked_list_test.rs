@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests {
-    use data_structures::LinkedList;
+    use nexum::LinkedList;
 
     #[test]
     fn new() {
