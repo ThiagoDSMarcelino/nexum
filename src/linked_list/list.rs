@@ -39,17 +39,17 @@ impl<T> LinkedList<T> {
         self.tail = None;
         self.length = 0;
     }
-    
+
     /// Returns a reference to the first element in the linked list, if any.
     pub fn front(&self) -> Option<&T> {
         self.head.map(|node| unsafe { &(*node.as_ptr()).element })
     }
-    
+
     /// Returns a reference to the last element in the linked list, if any.
     pub fn back(&self) -> Option<&T> {
         self.tail.map(|node| unsafe { &(*node.as_ptr()).element })
     }
-    
+
     /// Adds an element to the front of the linked list.
     pub fn push_front(&mut self, element: T) {
         let new_node = Box::new(Node::new(element));
@@ -70,7 +70,7 @@ impl<T> LinkedList<T> {
 
         self.length += 1;
     }
-    
+
     /// Adds an element to the back of the linked list.
     pub fn push_back(&mut self, element: T) {
         let new_node = Box::new(Node::new(element));
@@ -91,7 +91,7 @@ impl<T> LinkedList<T> {
 
         self.length += 1;
     }
-    
+
     /// Removes and returns the first element from the linked list, if any.
     pub fn pop_front(&mut self) -> Option<T> {
         self.head.map(|node| unsafe {
@@ -108,7 +108,7 @@ impl<T> LinkedList<T> {
             node.into_element()
         })
     }
-    
+
     /// Removes and returns the last element from the linked list, if any.
     pub fn pop_back(&mut self) -> Option<T> {
         self.tail.map(|node| unsafe {
@@ -125,7 +125,7 @@ impl<T> LinkedList<T> {
             node.into_element()
         })
     }
-    
+
     /// Removes and returns the element at the specified index, if it exists.
     pub fn remove(&mut self, index: usize) -> Option<T> {
         if index > self.length {
@@ -196,7 +196,7 @@ impl<T> LinkedList<T> {
             node.into_element()
         })
     }
-    
+
     /// Inserts an element at the specified index in the linked list.
     pub fn insert(&mut self, index: usize, element: T) {
         if index > self.length {

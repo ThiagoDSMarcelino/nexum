@@ -1,6 +1,5 @@
 use std::ptr::NonNull;
 
-
 /// # Node
 /// Represents a node in a doubly linked list.
 ///
