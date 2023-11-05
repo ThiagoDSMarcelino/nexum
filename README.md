@@ -7,7 +7,13 @@
 
 ## Installation
 
-To use Nexum in your Rust project, you can add it to your `Cargo.toml`:
+Run the following Cargo command in your project directory:
+
+```bash
+cargo add nexum
+```
+
+Or add the following line to your `Cargo.toml`:
 
 ```toml
 [dependencies]
