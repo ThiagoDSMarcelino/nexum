@@ -6,8 +6,13 @@
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/ThiagoDSMarcelino/data-structures)
 
 ## Installation
+Run the following Cargo command in your project directory:
 
-To use Nexum in your Rust project, you can add it to your `Cargo.toml`:
+```bash
+cargo add nexum
+```
+
+Or add the following line to your `Cargo.toml`:
 
 ```toml
 [dependencies]
