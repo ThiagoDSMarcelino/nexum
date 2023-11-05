@@ -1,4 +1,5 @@
 [package]
 name = "nexum"
 version = "0.1.0"
+authors = ["Thiago dos Santos Marcelino <thiagodsmarcelino@gmail.com>"]
 edition = "2021"
