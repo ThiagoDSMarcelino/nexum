@@ -12,8 +12,14 @@ mod tests {
 
     #[test]
     fn from() {
-        let arr = [5, 2, 1, 4];
-        let list = LinkedList::from(arr);
+        let arr: [String; 3] = ["a".to_owned(), "b".to_owned(), "c".to_owned()];
+        
+        let list = { // Test if the from method clone the elements, not just the pointer
+            let clone = arr.clone();
+            let list: LinkedList<String> = LinkedList::from(clone);
+            list
+        };
+        
 
         for (i, elem) in list.into_iter().enumerate() {
             assert_eq!(&arr[i], elem);

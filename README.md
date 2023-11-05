@@ -5,10 +5,6 @@
 ![GitHub](https://img.shields.io/github/license/ThiagoDSMarcelino/data-structures?color=blue)
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/ThiagoDSMarcelino/data-structures)
 
-## Description
-
-Nexum is a collection of commonly used data structures in Rust, designed to simplify the development of various applications and algorithms. It includes data structures like Linked Lists and Hash Tables, which are essential components in many programming tasks.
-
 ## Installation
 
 To use Nexum in your Rust project, you can add it to your `Cargo.toml`:
@@ -25,6 +21,8 @@ Each data structure in Nexum comes with detailed documentation on how to use it 
 * [Linked List](docs/linked-list.md)
 
 * [Hash Table](docs/hash-table.md)
+
+* [Auto Expand Vector](docs/auto-expand-vector.md)
 
 ## Contributing
 

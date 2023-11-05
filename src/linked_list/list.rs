@@ -273,7 +273,7 @@ impl<T> LinkedList<T> {
 }
 
 impl<T, const N: usize> From<[T; N]> for LinkedList<T> {
-    /// Creates a linked list from an array of elements.
+    /// Creates a linked list from an array.
     fn from(source: [T; N]) -> Self {
         let mut list = LinkedList::new();
 
