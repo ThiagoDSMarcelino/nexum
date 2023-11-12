@@ -7,13 +7,26 @@ mod tests {
         let hash = HashTable::<i32>::new();
 
         assert!(hash.is_empty());
+        assert_eq!(hash.get_hash_algorithm(), "Djb2");
+        assert_eq!(hash.capacity(), 10);
+    }
+
+    #[test]
+    fn default() {
+        let hash = HashTable::<i32>::default();
+
+        assert!(hash.is_empty());
+        assert_eq!(hash.get_hash_algorithm(), "Djb2");
+        assert_eq!(hash.capacity(), 10);
     }
 
     #[test]
     fn with_capacity() {
-        let hash = HashTable::<i32>::with_capacity(10);
+        let hash = HashTable::<i32>::with_capacity(100);
 
         assert!(hash.is_empty());
+        assert_eq!(hash.get_hash_algorithm(), "Djb2");
+        assert_eq!(hash.capacity(), 100);
     }
 
     #[test]
@@ -24,15 +37,8 @@ mod tests {
         hash.insert("world".to_string(), 2);
 
         assert!(!hash.is_empty());
-        assert!(hash["hello"] == 1);
-        assert!(hash["world"] == 2);
-    }
-
-    #[test]
-    #[should_panic]
-    fn test_panic() {
-        let hash = HashTable::<i32>::new();
-        let _ = hash["panic"];
+        assert_eq!(hash["hello"], 1);
+        assert_eq!(hash["world"], 2);
     }
 
     #[test]
@@ -44,7 +50,21 @@ mod tests {
         hash.set("hello".to_string(), 3);
 
         assert!(!hash.is_empty());
-        assert!(hash["hello"] == 3);
-        assert!(hash["world"] == 2);
+        assert_eq!(hash["hello"], 3);
+        assert_eq!(hash["world"], 2);
+    }
+
+    #[test]
+    #[should_panic]
+    fn index_panic() {
+        let hash = HashTable::<i32>::new();
+        let _ = hash["panic"];
+    }
+
+    #[test]
+    #[should_panic]
+    fn index_mut_panic() {
+        let mut hash = HashTable::<i32>::new();
+        hash["panic"] = 1;
     }
 }

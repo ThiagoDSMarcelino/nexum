@@ -3,7 +3,7 @@ use std::ptr::NonNull;
 #[derive(Clone, Debug)]
 pub(super) struct Node<T> {
     key: String,
-    value: T,
+    pub(super) value: T,
     pub(super) next: Option<NonNull<Node<T>>>,
 }
 
@@ -13,28 +13,6 @@ impl<T> Node<T> {
             key,
             value,
             next: None,
-        }
-    }
-
-    pub fn get(&self, key: &str) -> Option<&T> {
-        if self.key == key {
-            return Some(&self.value);
-        }
-
-        match &self.next {
-            Some(node) => unsafe { node.as_ref().get(key) },
-            None => None,
-        }
-    }
-
-    pub fn get_mut(&mut self, key: &str) -> Option<&mut T> {
-        if self.key == key {
-            return Some(&mut self.value);
-        }
-
-        match &mut self.next {
-            Some(node) => unsafe { node.as_mut().get_mut(key) },
-            None => None,
         }
     }
 

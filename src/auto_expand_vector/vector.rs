@@ -102,8 +102,6 @@ impl<T> AutoExpandVector<T> {
         while index >= self.len() {
             self.data.push(None);
         }
-
-        self.trim_to_length();
     }
 
     // TODO: Improve performance

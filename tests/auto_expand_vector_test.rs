@@ -18,6 +18,21 @@ mod tests {
     }
 
     #[test]
+    fn push_nulls() {
+        let mut vec = AutoExpandVector::new();
+
+        vec.push(1);
+        vec.insert(5, 2);
+
+        assert_eq!(vec.capacity(), 6);
+        assert_eq!(vec.len(), 6);
+        assert_eq!(vec.get(0), &Some(1));
+        assert_eq!(vec.get(3), &None);
+        assert_eq!(vec.get(5), &Some(2));
+    }
+
+
+    #[test]
     fn clear() {
         let mut vec = AutoExpandVector::new();
         vec.push(1);

@@ -1,7 +1,4 @@
-use std::{
-    marker::PhantomData,
-    ops::{Index, IndexMut},
-};
+use std::{any::type_name, marker::PhantomData};
 
 use super::{
     hash_algorithm::{Djb2, HashAlgorithm},
@@ -11,7 +8,7 @@ use super::{
 #[derive(Debug, Clone)]
 /// A hash table data structure
 pub struct HashTable<T, H: HashAlgorithm = Djb2> {
-    data: Box<[Option<Node<T>>]>,
+    pub(super) data: Box<[Option<Node<T>>]>,
     marker: PhantomData<H>,
 }
 
@@ -43,11 +40,17 @@ impl<T, H: HashAlgorithm> HashTable<T, H> {
             marker: PhantomData,
         }
     }
-}
 
-impl<T, H: HashAlgorithm> HashTable<T, H> {
+    pub fn capacity(&self) -> usize {
+        self.data.len()
+    }
+
     pub fn is_empty(&self) -> bool {
         self.data.iter().all(|node| node.is_none())
+    }
+
+    pub fn get_hash_algorithm(&self) -> &str {
+        type_name::<H>().split("::").last().unwrap()
     }
 }
 
@@ -69,36 +72,10 @@ impl<T, H: HashAlgorithm> HashTable<T, H> {
             None => self.gen_node(index, key, value),
         }
     }
-}
 
-impl<T, H: HashAlgorithm> HashTable<T, H> {
     fn gen_node(&mut self, index: usize, key: String, value: T) {
         let new_node = Node::new(key, value);
         self.data[index] = Some(new_node);
-    }
-}
-
-impl<'a, T, H: HashAlgorithm> Index<&'a str> for HashTable<T, H> {
-    type Output = T;
-
-    fn index(&self, index: &'a str) -> &Self::Output {
-        let hash = H::hash(index, self.data.len());
-
-        self.data[hash]
-            .as_ref()
-            .and_then(|node| node.get(index))
-            .unwrap_or_else(|| panic!("Key not found"))
-    }
-}
-
-impl<'a, T, H: HashAlgorithm> IndexMut<&'a str> for HashTable<T, H> {
-    fn index_mut(&mut self, index: &'a str) -> &mut Self::Output {
-        let hash = H::hash(index, self.data.len());
-
-        self.data[hash]
-            .as_mut()
-            .and_then(|node| node.get_mut(index))
-            .unwrap_or_else(|| panic!("Key not found"))
     }
 }
 

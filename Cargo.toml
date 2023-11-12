@@ -1,6 +1,6 @@
 [package]
 name = "nexum"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Thiago dos Santos Marcelino <thiagodsmarcelino@gmail.com>"]
 edition = "2021"
 description = "Library with a collection of commonly used data structures"
