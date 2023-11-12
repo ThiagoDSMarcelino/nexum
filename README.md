@@ -17,7 +17,7 @@ Or add the following line to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-nexum = "0.1"
+nexum = "0.1.1"
 ```
 
 ## Documentation
